@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup # type: ignore
 import logging
 import os
 import requests
