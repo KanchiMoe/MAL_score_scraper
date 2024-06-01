@@ -1,6 +1,6 @@
-import psycopg2
-from psycopg2.extras import DictCursor
-from dotenv import load_dotenv
+import psycopg2 # type: ignore
+from psycopg2.extras import DictCursor # type: ignore
+from dotenv import load_dotenv # type: ignore
 import logging
 import uuid
 
@@ -11,8 +11,6 @@ RST = "\033[0;0m"
 
 load_dotenv()
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 def DBStart(member):
     with psycopg2.connect() as psql:
         cursor = psql.cursor(cursor_factory=DictCursor)
@@ -21,7 +19,7 @@ def DBStart(member):
         is_in_db = cursor.fetchone()
 
         if is_in_db is not None:
-            logging.debug(f"ID {member["id"]} is in database.")
+            logging.debug(f"{OKB}ID {member["id"]} is in database.{RST}")
             AlreadyInDB_DiffCheck(member, cursor, data_from_db=is_in_db)  
         else:
             logging.debug(f"ID {member["id"]} is not in database.")
