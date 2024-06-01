@@ -2,10 +2,15 @@ from src.page_scrape import PageScrape
 from src.sql import *
 from src.colours import *
 import logging
+import os
 import requests
 import time
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+DEFAULT_LOG_LEVEL = os.environ.get("LOG_LEVEL")
+DEFAULT_LOG_FORMAT = os.environ.get("LOG_FORMAT")
+logging.getLogger().setLevel(DEFAULT_LOG_LEVEL)
+logging.basicConfig(format=DEFAULT_LOG_FORMAT)
+
 ROOT_URL = "https://myanimelist.net/anime/6547/Angel_Beats/stats"
 MAX_OFFSET = 600
 

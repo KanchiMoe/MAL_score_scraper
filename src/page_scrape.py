@@ -4,8 +4,6 @@ import os
 import requests
 import time
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 def PageScrape(url: str):
     response = requests.get(url)
     logging.info(f"Requesting {url}")
