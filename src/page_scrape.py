@@ -3,6 +3,7 @@ import logging
 import os
 import requests
 import time
+from src.colours import RST, CTR
 
 def PageScrape(url: str):
     response = requests.get(url)
@@ -56,8 +57,12 @@ def PageScrape(url: str):
             logging.debug(f"Sanatised dict: {sanatised_dict}")
 
             yield(sanatised_dict)
+
+    elif response.status_code == 405:
+        RateLimited(url) ### to complete
+
     else:
-        msg = f"Failed to retrieve page. Status code: {response.status_code}"
+        msg = f"{CTR}Failed to retrieve page. Status code: {response.status_code}{RST}"
         logging.critical(msg)
         raise RuntimeError(msg)
 
@@ -101,3 +106,6 @@ def SanatiseDict(member_raw_dict):
         member_raw_dict.update(eps_seen=raw_eps_seen.split(" / ")[0])
 
     return member_raw_dict
+
+def RateLimited(url, count):
+    logging.warn(f"We're being rate limited. ") ### to complete
