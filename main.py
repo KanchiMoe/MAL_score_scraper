@@ -31,8 +31,8 @@ def GetURL():
         for member in member:
             DBStart(member)
 
-        time.sleep(60)
         logging.info("Sleeping for 60 seconds...")
+        time.sleep(60)
         offset += 75
 
 
