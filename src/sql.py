@@ -3,13 +3,16 @@ from psycopg2.extras import DictCursor # type: ignore
 from dotenv import load_dotenv # type: ignore
 import logging
 import uuid
+import pytz
+from datetime import datetime
+
+load_dotenv()
 
 OKG = "\033[92m"
 OKB = '\033[94m'
 WRN = "\033[93m"
 RST = "\033[0;0m"
 
-load_dotenv()
 
 def DBStart(member):
     with psycopg2.connect() as psql:
@@ -56,7 +59,7 @@ def ChangeTracking(cursor, member, action, field, old, new):
     random_uuid = uuid.uuid4()
     cursor.execute("""
         INSERT INTO change_tracking
-        (uuid, user_id, action, field, old_value, new_value)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        """, (str(random_uuid), member["id"], action.upper(), field, old, new)
+        (uuid, timestamp, member_id, action, field, old_value, new_value)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (str(random_uuid), datetime.now(pytz.timezone('Europe/London')), member["id"], action.upper(), field, old, new)
         )
