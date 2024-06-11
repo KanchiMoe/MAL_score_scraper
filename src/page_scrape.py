@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup # type: ignore
 import logging
 import requests
 import time
-from src.colours import RST, CTR
+from src.colours import RST, CTR, WRN
 
 @backoff.on_exception(
     backoff.constant, 
@@ -22,6 +22,9 @@ def RequestHandler(requested_url):
         return response
     elif response.status_code == 405:
         logging.warn(f"{CTR}We are being rate limited{RST}")
+        raise requests.exceptions.RequestException(response=response)
+    elif response.status_code == 504:
+        logging.warn(f"{WRN}Got 504 (gateway timeour). We might be being rate limited, or MAL has an error. Waiting before retrying...")
         raise requests.exceptions.RequestException(response=response)
     else:
         msg = f"{CTR}Failed to retrieve page. Page: {requested_url}, status code: {response.status_code}{RST}"
