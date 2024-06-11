@@ -3,13 +3,16 @@ from psycopg2.extras import DictCursor # type: ignore
 from dotenv import load_dotenv # type: ignore
 import logging
 import uuid
+import pytz
+from datetime import datetime
+
+load_dotenv()
 
 OKG = "\033[92m"
 OKB = '\033[94m'
 WRN = "\033[93m"
 RST = "\033[0;0m"
 
-load_dotenv()
 
 def DBStart(member):
     with psycopg2.connect() as psql:
@@ -24,7 +27,7 @@ def DBStart(member):
         else:
             logging.debug(f"ID {member["id"]} is not in database.")
             NewAddToDB(member, cursor)
-            ChangeTracking(cursor, member, action="create", field="ALL", old="NULL", new="n/a" )
+            ChangeTracking(cursor, member_id=member["id"], action="create", field="ALL", old="NULL", new="n/a" )
 
 
 def NewAddToDB(member, cursor):
@@ -48,15 +51,37 @@ def AlreadyInDB_DiffCheck(member, cursor, data_from_db):
         logging.debug(f"{WRN}Differences found between database and MAL for {member["id"]}{RST}")
         for key, diff in differences.items():
             logging.debug(f"{WRN}Differences: {key} - from MAL: {diff["member"]}, DB: {diff["db"]}{RST}")
+            UpdateAlreadyInDB(cursor, member_id=member["id"], field=key, correct_value=diff["member"], old_value=diff["db"])
     else:
         logging.debug(f"{OKG}No differences found between database and MAL for {member["id"]}{RST}")
 
 
-def ChangeTracking(cursor, member, action, field, old, new):
+def UpdateAlreadyInDB(cursor, member_id, field, correct_value, old_value):
+    FieldSafetyCheck(field)
+
+    query = f"""
+        UPDATE scores
+        SET {field} = %s
+        WHERE member_id = %s
+        """
+    cursor.execute(query, (correct_value, member_id))
+    ChangeTracking(cursor, member_id, action="update", field=field, old=old_value, new=correct_value)
+
+def FieldSafetyCheck(field):
+    """
+    This is an SQL safety check on the 'field' value, to prevent SQL injections.
+    """
+    allowed_fields = ["score", "status", "eps_seen"]
+    if field not in allowed_fields:
+        msg = f"SQL Safety Check - field '{field}' not in list of allowed fields."
+        logging.critical(msg)
+        raise RuntimeError(msg)
+
+def ChangeTracking(cursor, member_id, action, field, old, new):
     random_uuid = uuid.uuid4()
     cursor.execute("""
         INSERT INTO change_tracking
-        (uuid, user_id, action, field, old_value, new_value)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        """, (str(random_uuid), member["id"], action.upper(), field, old, new)
+        (uuid, timestamp, member_id, action, field, old_value, new_value)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (str(random_uuid), datetime.now(pytz.timezone('Europe/London')), member_id, action.upper(), field, old, new)
         )

@@ -3,3 +3,5 @@ requests
 logging
 psycopg2
 python-dotenv
+pytz
+backoff

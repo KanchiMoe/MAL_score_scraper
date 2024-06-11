@@ -12,7 +12,7 @@ logging.getLogger().setLevel(DEFAULT_LOG_LEVEL)
 logging.basicConfig(format=DEFAULT_LOG_FORMAT)
 
 ROOT_URL = "https://myanimelist.net/anime/6547/Angel_Beats/stats"
-MAX_OFFSET = 600
+MAX_OFFSET = 8000
 
 def GetURL():
     ColourTest()
@@ -31,8 +31,8 @@ def GetURL():
         for member in member:
             DBStart(member)
 
-        time.sleep(60)
         logging.info("Sleeping for 60 seconds...")
+        time.sleep(60)
         offset += 75
 
 
