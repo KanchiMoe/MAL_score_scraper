@@ -12,7 +12,7 @@ logging.getLogger().setLevel(DEFAULT_LOG_LEVEL)
 logging.basicConfig(format=DEFAULT_LOG_FORMAT)
 
 ROOT_URL = "https://myanimelist.net/anime/6547/Angel_Beats/stats"
-MAX_OFFSET = 8000
+MAX_OFFSET = 7425
 
 def GetURL():
     ColourTest()
