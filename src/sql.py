@@ -17,7 +17,7 @@ RST = "\033[0;0m"
 def DBStart(member):
     with psycopg2.connect() as psql:
         cursor = psql.cursor(cursor_factory=DictCursor)
-        cursor.execute("SELECT * FROM scores WHERE member_id = %s;",
+        cursor.execute("SELECT * FROM scores.scores WHERE member_id = %s;",
                        (member["id"],))
         is_in_db = cursor.fetchone()
 
@@ -32,7 +32,7 @@ def DBStart(member):
 
 def NewAddToDB(member, cursor):
     cursor.execute("""
-        INSERT INTO scores
+        INSERT INTO scores.scores
         (member_id, member_username, score, status, eps_seen)
         VALUES (%s, %s, %s, %s, %s);  
         """, (member["id"], member["name"], member["score"], member["status"], member["eps_seen"])
@@ -60,7 +60,7 @@ def UpdateAlreadyInDB(cursor, member_id, field, correct_value, old_value):
     FieldSafetyCheck(field)
 
     query = f"""
-        UPDATE scores
+        UPDATE scores.scores
         SET {field} = %s
         WHERE member_id = %s
         """
@@ -80,7 +80,7 @@ def FieldSafetyCheck(field):
 def ChangeTracking(cursor, member_id, action, field, old, new):
     random_uuid = uuid.uuid4()
     cursor.execute("""
-        INSERT INTO change_tracking
+        INSERT INTO scores.change_tracking
         (uuid, timestamp, member_id, action, field, old_value, new_value)
         VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, (str(random_uuid), datetime.now(pytz.timezone('Europe/London')), member_id, action.upper(), field, old, new)
