@@ -1,11 +1,6 @@
 import logging
 import os
 
-# DEFAULT_LOG_LEVEL = os.environ.get("LOG_LEVEL")
-# DEFAULT_LOG_FORMAT = os.environ.get("LOG_FORMAT")
-# logging.getLogger().setLevel(DEFAULT_LOG_LEVEL)
-# logging.basicConfig(format=DEFAULT_LOG_FORMAT)
-
 OKGREEN = "\033[92m"
 OKBLUE = '\033[94m'
 OKCYAN = '\033[96m'
