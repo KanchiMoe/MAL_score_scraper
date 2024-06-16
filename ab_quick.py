@@ -341,7 +341,7 @@ def SQL_UpdateUsername(member_object, member_id):
 
 
 def SQL_IsIDInDB(member_id):
-    logging.debug(f"member id: {member_id}")
+    logging.debug(f"Checking if {member_id} is in the database already...")
 
     with psycopg2.connect() as psql:
         cursor = psql.cursor(cursor_factory=DictCursor)
@@ -355,8 +355,7 @@ def SQL_IsIDInDB(member_id):
             
             return True
         else:
-            print("not in db")
-            print(f"{is_in_db}")
+            logging.debug(f"ID {member_id} is NOT in the database.")
             return False
 
         # if is_in_db is not None:
