@@ -1,6 +1,6 @@
 import logging
 import requests
-from src.colours import CTR, WRN, RST
+from src.colours import CTR, WRN, RST, OKG, OKC
 import time
 from bs4 import BeautifulSoup
 import psycopg2 # type: ignore
@@ -218,7 +218,7 @@ def ProcessNotInDB():
         
 
     for member in LIST_OF_MEMBERS_NOT_IN_DB:
-        logging.debug(member)
+        logging.debug(f"Processing: {member}")
 
         ROOT_URL = "https://myanimelist.net/profile/"
         url = f"{ROOT_URL}{member["name"]}"
@@ -228,7 +228,9 @@ def ProcessNotInDB():
         check = SQL_IsIDInDB(member_id)
         if check == True:
             logging.debug(f"")
-            print(f"check: {check}")
+            print(f"{OKC}check: {check}{RST}")
+            print("Sleeping for 10 ######")
+            time.sleep(10)
             SQL_UpdateUsername(member, member_id)
             break
 
@@ -261,6 +263,12 @@ def ProcessNotInDB():
             print("about to remove from constant")
             print(member)
             LIST_OF_MEMBERS_NOT_IN_DB.remove(member)
+
+            logging.debug("")
+            logging.debug(f"PEOPLE REMAINING: {len(LIST_OF_MEMBERS_NOT_IN_DB)}")
+            print(LIST_OF_MEMBERS_NOT_IN_DB)
+            print("Sleeping for 2")
+            time.sleep(2)
 
 
 def SQL_UpdateUsername(member_object, member_id):
@@ -350,12 +358,13 @@ def SQL_IsIDInDB(member_id):
         is_in_db = cursor.fetchone()
 
         if is_in_db:
+            logging.debug(f"{OKC}ID {member_id} IS in the database.{RST}")
             print(f"is in db")
             print(f"{is_in_db}")
             
             return True
         else:
-            logging.debug(f"ID {member_id} is NOT in the database.")
+            logging.debug(f"{OKG}ID {member_id} is NOT in the database.{RST}")
             return False
 
         # if is_in_db is not None:
@@ -420,10 +429,10 @@ def GetURL():
             logging.critical(msg)
             raise RuntimeError(msg)
 
-        for member in member:
+        for memberItterator in member:
             #DBStart(member)
-            print(f"member: {member["name"]}")
-            IsInDB(member)
+            print(f"member: {memberItterator["name"]}")
+            IsInDB(memberItterator)
 
         if LIST_OF_MEMBERS_NOT_IN_DB:
             ProcessNotInDB()
