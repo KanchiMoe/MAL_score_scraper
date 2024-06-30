@@ -27,7 +27,7 @@ If using `ab_quick`, this needs to be in the root of the project. If using `main
 
 ## Repo name change
 
-The name of this repo changed from `MAL_score_scraper` to `x` on `00 aa 2024`.
+The name of this repo changed from `MAL_score_scraper` to `MAL_score_scraper_py` on `30 June 2024`.
 
 
 
