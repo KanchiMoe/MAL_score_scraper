@@ -1,9 +1,9 @@
 # MAL Score Scraper
 
 > [!CAUTION]
-> **This repo is no longer being updated.**
+> **This repo is no longer being updated**, and is deprecated in favour of https://github.com/KanchiMoe/MAL_score_scraper_go, where development is continued but in Go lang.
 >
-> It works for what I intended it to do, but it's messy and set up for my own use, but it could always be improved.
+> This script does work for what I intended it to do, but it's messy and set up for my own use, but it could always be improved.
 >
 > The structure of the database tables also changed in `ab_quick.py` and `main.py` has not been updated to reflect those changes.
 
